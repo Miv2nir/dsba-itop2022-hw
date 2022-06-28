@@ -5,45 +5,57 @@
 ProxyModel::ProxyModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
-    name = QString();
-    min_price = 0;
-    max_price = INT_MAX;
+    _name = QString();
+    _min_price = 0;
+    _max_price = INT_MAX;
 }
 void ProxyModel::set_switch(bool state)
 {
-    this->state = state;
+    _state = state;
     invalidateFilter();
 }
 void ProxyModel::set_switch_paid(bool state_paid)
 {
-    this->state_paid = state_paid;
+    _state_paid = state_paid;
     invalidateFilter();
 }
 
 void ProxyModel::set_min_price(int min_price)
 {
-    this->min_price = min_price;
+    _min_price = min_price;
     invalidateFilter();
 }
 void ProxyModel::set_max_price(int max_price)
 {
-    this->max_price = max_price;
+    _max_price = max_price;
     invalidateFilter();
 }
 void ProxyModel::set_name(QString name)
 {
     if (name.trimmed().isEmpty())
     {
-        this->name = QString();
+        _name = QString();
     }
     else
     {
-        this->name = name;
+        _name = name;
     }
     invalidateFilter();
 }
-
-bool locate(QString target, QString sample)
+void ProxyModel::set_category(QString category)
+{
+    if (category.trimmed().isEmpty())
+    {
+        _category = QString();
+    }
+    else
+    {
+        _category = category;
+    }
+    invalidateFilter();
+}
+//TODO: fix codestyle, make sliders, replace qitemmodel with QAbstractTableModel or get rid of a vector, optional clean up filterAcceptsRow
+bool locate(const QString &target, const QString &sample)
 {
     return (sample.toStdString().find(target.toStdString()) != std::string::npos);
 }
@@ -54,72 +66,74 @@ bool ProxyModel::filterAcceptsRow(int sourceRow,
     // Handling Free/Paid
     QModelIndex type_index = sourceModel()->index(sourceRow, 6, sourceParent);
     std::string type = sourceModel()->data(type_index).toString().toStdString();
-    bool checking;
+    bool isFree;
     if (type == "Free")
     {
-        checking = true;
+        isFree = true;
     }
     else
     {
-        checking = false;
+        isFree = false;
     }
 
     // Handling price
     QModelIndex price_index = sourceModel()->index(sourceRow, 7, sourceParent);
     float price = sourceModel()->data(price_index).toFloat();
-    if ((min_price > price) || (max_price < price))
+    if ((_min_price > price) || (_max_price < price))
     {
         return false;
     }
+    bool check_name = true;
+    bool check_category = true;
 
-    if (!this->name.trimmed().isEmpty())
+    if (!_name.trimmed().isEmpty())
     {
         // Handling name
         QModelIndex name_index =
             sourceModel()->index(sourceRow, 0, sourceParent);
 
         QString name = sourceModel()->data(name_index).toString();
-
-        if (this->get_switch())
-        {
-            return checking && (locate(this->name, name));
-        }
-        else if (this->get_switch_paid())
-        {
-            return !checking && (locate(this->name, name));
-        }
-
-        else
-        {
-            return locate(this->name, name);
-        }
+        check_name = locate(_name, name);
     }
-    else
+
+    if (!_category.trimmed().isEmpty())
     {
-        if (this->get_switch())
-        {
-            return checking;
-        }
-        else if (this->get_switch_paid())
-        {
-            return !checking;
-        }
+        //Handling category
+        QModelIndex category_index = sourceModel()->index(sourceRow, 1, sourceParent);
 
-        return true;
+        QString category = sourceModel()->data(category_index).toString();
+        check_category = locate(_category, category);
     }
 
-    /*
-        if (this -> country.trimmed().isEmpty()) // if the user did not write a
-       country return (min_population <= population) && (population <=
-       max_population); // only filter by population else return population >=
-       min_population && population <= max_population && country == this ->
-       country;*/
+    //both searches are empty
+    if (this->get_switch())
+    {
+        return isFree && check_name && check_category;
+    }
+    else if (this->get_switch_paid())
+    {
+        return !isFree && check_name && check_category;
+    }
+
+    return check_name && check_category;
 }
 
 bool ProxyModel::lessThan(const QModelIndex &one, const QModelIndex &two) const
 {
-    // returns "true" if element at the "left" goes first.
+    if (one.column() == 2 || one.column() == 4 || one.column() == 7)
+    {
+        float A = sourceModel()->data(one).toFloat();
+        float B = sourceModel()->data(two).toFloat();
 
+        return A < B;
+    }
+    if (one.column() == 3)
+    {
+        int A = sourceModel()->data(one).toInt();
+        int B = sourceModel()->data(two).toInt();
+
+        return A < B;
+    }
     QString A = sourceModel()->data(one).toString();
     QString B = sourceModel()->data(two).toString();
 

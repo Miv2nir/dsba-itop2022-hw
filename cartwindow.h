@@ -22,7 +22,7 @@ class CartWindow : public QDialog
     void obtainCart(std::vector<App> vcart);
     QStandardItemModel *get_model_cart() const
     {
-        return model_cart;
+        return _model_cart;
     }
 
     void setModelPointer(QStandardItemModel *model_cart);
@@ -31,8 +31,8 @@ class CartWindow : public QDialog
 
    private:
     Ui::CartWindow *ui;
-    std::vector<App> vcart;
-    QStandardItemModel *model_cart;
+    std::vector<App> _vcart;
+    QStandardItemModel *_model_cart;
 };
 
 #endif  // CARTWINDOW_H
