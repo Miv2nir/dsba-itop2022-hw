@@ -1,5 +1,6 @@
 #include "proxymodel.h"
 
+#include <algorithm>
 #include <iostream>
 
 ProxyModel::ProxyModel(QObject *parent)
@@ -122,20 +123,21 @@ bool ProxyModel::lessThan(const QModelIndex &one, const QModelIndex &two) const
 {
     if (one.column() == 2 || one.column() == 4 || one.column() == 7)
     {
-        float A = sourceModel()->data(one).toFloat();
-        float B = sourceModel()->data(two).toFloat();
+        float a = sourceModel()->data(one).toFloat();
+        float b = sourceModel()->data(two).toFloat();
 
-        return A < B;
+        return a < b;
     }
     if (one.column() == 3)
     {
-        int A = sourceModel()->data(one).toInt();
-        int B = sourceModel()->data(two).toInt();
+        int a = sourceModel()->data(one).toInt();
+        int b = sourceModel()->data(two).toInt();
 
-        return A < B;
+        return a < b;
     }
-    QString A = sourceModel()->data(one).toString();
-    QString B = sourceModel()->data(two).toString();
 
-    return A < B;
+    QString a = sourceModel()->data(one).toString();
+    QString b = sourceModel()->data(two).toString();
+
+    return a < b;
 }

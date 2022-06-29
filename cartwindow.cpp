@@ -26,7 +26,7 @@ void CartWindow::setModelPointer(QStandardItemModel* model_cart)
     ui->tableView_cart->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->labelDisplay->setText("Number of entries: " + QString::number(_model_cart->rowCount()));
 }
-
+/*
 void CartWindow::obtainCart(std::vector<App> v)
 {
     // std::cout << "1- " << v.size() << std::endl;
@@ -57,7 +57,8 @@ void CartWindow::obtainCart(std::vector<App> v)
     }
     ui->labelDisplay->setText("Number of entries: " + QString::number(v.size()));
 }
-
+*/
+/*
 void CartWindow::createTableCart()
 {
     _model_cart = new QStandardItemModel(0, 9, this);
@@ -72,4 +73,4 @@ void CartWindow::createTableCart()
     _model_cart->setHorizontalHeaderItem(8, new QStandardItem("Update"));
 
     // std::cout << vcart.size() << std::endl;
-}
+}*/

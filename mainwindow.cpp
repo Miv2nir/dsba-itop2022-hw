@@ -100,22 +100,6 @@ void MainWindow::on_actionImport_triggered()
         std::stringstream s(line);
         ////std::cout << line << std::endl;
         std::vector<std::string> v = processLine(line);
-        /*
-        App app;
-        app.name = v[0];
-        app.category = v[1];
-        // //std::cout << v[2] << std::endl;
-
-        app.rating = stof(v[2]);
-        app.reviews_count = stoi(v[3]);
-
-        app.size = stof(v[4]);
-        app.installs = v[5];
-        app.type = v[6];
-
-        app.price = stof(v[7]);
-        app.update = v[8];*/
-        //_list.push_back(app);
         // implementation without vector
         _model->insertRows(i, 1);
         _model->setData(_model->index(i, 0), QString::fromStdString(v[0]));
@@ -133,26 +117,6 @@ void MainWindow::on_actionImport_triggered()
         }
     }
     table.close();
-
-    /*
-    for (int i = 0; i < _list.size(); i++)
-    {
-        _model->insertRows(i, 1);
-        _model->setData(_model->index(i, 0),
-                        QString::fromStdString(_list[i].name));
-        _model->setData(_model->index(i, 1),
-                        QString::fromStdString(_list[i].category));
-        _model->setData(_model->index(i, 2), _list[i].rating);
-        _model->setData(_model->index(i, 3), _list[i].reviews_count);
-        _model->setData(_model->index(i, 4), _list[i].size);
-        _model->setData(_model->index(i, 5),
-                        QString::fromStdString(_list[i].installs));
-        _model->setData(_model->index(i, 6),
-                        QString::fromStdString(_list[i].type));
-        _model->setData(_model->index(i, 7), _list[i].price);
-        _model->setData(_model->index(i, 8),
-                        QString::fromStdString(_list[i].update));
-    }*/
 }
 
 MainWindow::~MainWindow()
@@ -184,10 +148,6 @@ void MainWindow::createTable()
     _model_cart->setHorizontalHeaderItem(6, new QStandardItem("Type"));
     _model_cart->setHorizontalHeaderItem(7, new QStandardItem("Price"));
     _model_cart->setHorizontalHeaderItem(8, new QStandardItem("Update"));
-
-    // ui->tableView->setModel(model);
-    // ui->tableView->setEditTriggers(
-    // QAbstractItemView::EditTrigger::NoEditTriggers);
 }
 
 void MainWindow::on_searchThing_textChanged(const QString &arg1)
@@ -236,9 +196,6 @@ void MainWindow::on_spinBox_2_valueChanged(int arg1)
 void MainWindow::on_pushButton_clicked()
 {
     CartWindow cartWindow;
-    // std::cout << "passed? " << vcart[0].name << std::endl;
-
-    //cartWindow.obtainCart(_vcart);
     cartWindow.setModelPointer(_model_cart);
 
     cartWindow.setModal(true);
@@ -247,25 +204,9 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButton_addToCart_clicked()
 {
-    // QItemSelectionModel *selection = ui->tableView->currentIndex().row();
-    App item;
     int i = _proxy->mapToSource(ui->tableView->currentIndex()).row();
     int j = _model_cart->rowCount();
 
-    item.name = _model->index(i, 0).data().toString().toStdString();
-    std::cout << "name ->" << item.name << std::endl;
-    /*item.name =
-        _list[_proxy->mapToSource(ui->tableView->currentIndex()).row()].name;*/
-    /*
-    item.category = _model->index(i, 1).data().toString().toStdString();
-    item.rating = _model->index(i, 2).data().toString().toFloat();
-    item.reviews_count = _model->index(i, 3).data().toInt();
-    item.size = _model->index(i, 4).data().toFloat();
-    item.installs = _model->index(i, 5).data().toString().toStdString();
-    item.type = _model->index(i, 6).data().toString().toStdString();
-    item.price = _model->index(i, 7).data().toFloat();
-    item.update = _model->index(i, 8).data().toString().toStdString();
-    _vcart.push_back(item);*/
     _model_cart->insertRows(j, 1);
     _model_cart->setData(_model_cart->index(j, 0), _model->index(i, 0).data());
     _model_cart->setData(_model_cart->index(j, 1), _model->index(i, 1).data());
@@ -276,20 +217,10 @@ void MainWindow::on_pushButton_addToCart_clicked()
     _model_cart->setData(_model_cart->index(j, 6), _model->index(i, 6).data());
     _model_cart->setData(_model_cart->index(j, 7), _model->index(i, 7).data());
     _model_cart->setData(_model_cart->index(j, 8), _model->index(i, 8).data());
-    std::cout << j << " " << _model->index(i, 0).data().toString().toStdString();
 }
 
 void MainWindow::on_pushButton_RemoveFromCart_clicked()
 {
-    /*
-    for (std::vector<App>::iterator it = _vcart.begin(); it < _vcart.end(); it++)
-    {
-        if (_model->index(_proxy->mapToSource(ui->tableView->currentIndex()).row(), 0).data().toString().toStdString() == it->name)
-        {
-            _vcart.erase(it);
-        }
-    }
-    */
     for (int i = 0; i < _model_cart->rowCount(); i++)
     {
         if (_model->index(_proxy->mapToSource(ui->tableView->currentIndex()).row(), 0).data().toString().toStdString() == _model_cart->index(i, 0).data().toString().toStdString())
@@ -320,11 +251,11 @@ void MainWindow::paintEvent(QPaintEvent *e)
 void MainWindow::on_horizontalSliderMin_sliderMoved(int position)
 {
     _proxy->set_min_price((position / table_max) * 400);
-    std::cout << "min" << position << std::endl;
+    //std::cout << "min" << position << std::endl;
 }
 
 void MainWindow::on_horizontalSliderMax_sliderMoved(int position)
 {
     _proxy->set_max_price(((400.001 - position) / table_max) * 400);
-    std::cout << "max" << position << std::endl;
+    //std::cout << "max" << position << std::endl;
 }

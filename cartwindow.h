@@ -18,8 +18,8 @@ class CartWindow : public QDialog
    public:
     explicit CartWindow(QWidget *parent = nullptr);
     ~CartWindow();
-    void createTableCart();
-    void obtainCart(std::vector<App> vcart);
+    //void createTableCart();
+    //void obtainCart(std::vector<App> vcart);
     QStandardItemModel *get_model_cart() const
     {
         return _model_cart;
