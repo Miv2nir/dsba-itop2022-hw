@@ -1,12 +1,6 @@
 # dsba-itop2022-hw
 Greetings!
 
-My Student ID is 177
+This is a repository for my course project that I did on the first year of my uni
 
-My Specification ID is 156
-
-
-The project description is titled **Play Market Digester.pdf**
-
-The project specification is titled **spec_156.pdf**
-
+Idk why you'd want to see it but uhh enjoy ig
